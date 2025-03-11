@@ -1,22 +1,58 @@
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./ui/Home";
-import Menu from "./features/menu/ Menu";
+import Menu,{loader as menuLoader} from "./features/menu/ Menu";
+import Cart from "./features/cart/Cart.jsx";
+import Order, {loader as orderLoader} from "./features/order/Order.jsx";
+import CreateOrder, {action as orderAction} from "./features/order/CreateOrder.jsx";
+import AppLayout from "./ui/AppLayout.jsx";
+import Error from "./ui/Error.jsx";
 
 
 const router =createBrowserRouter([
-    {
-        path:"/",
-        element:<Home />,
-    },
 
-    {
-        path:"/menu",
-        element:<Menu />,
-    },
-    {
-            path:"*",
-            element:"error",
-    },
+        {
+            element:<AppLayout/>,
+            errorElement:<Error/>,
+
+            children:[
+
+                {
+                    path:"/",
+                    element:<Home />,
+                },
+
+                {
+                    path:"/menu",
+                    element:<Menu />,
+                    loader:menuLoader,
+                    errorElement:<Error/>,
+
+                },
+
+                {
+                    path:"/cart",
+                    element:<Cart/>,
+                },
+
+                {
+                    path:"/order/new",
+                    element:<CreateOrder/>,
+                    action:orderAction,
+
+                },
+
+                {
+                    path:"/order/:orderId",
+                    element:<Order/>,
+                    loader:orderLoader,
+                    errorElement:<Error/>,
+
+                },
+
+
+            ],
+        },
+
 ],
     {
         basename:"/fast-pizza",
@@ -26,6 +62,6 @@ const router =createBrowserRouter([
 
 function App(){
 
-    return <RouterProvider future={{v7_startTransition: true,v7_relativeSplatPath: true,}} router={router}/>
+    return <RouterProvider future={{v7_startTransition: true,v7_relativeSplatPath: true,}} router={router}></RouterProvider>
 }
 export default App;
