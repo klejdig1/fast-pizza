@@ -40,7 +40,7 @@ function CreateOrder() {
     const cart = fakeCart;
 
     return (
-        <div>
+        <div className="my-10">
             <h2>Ready to order? Let's go!</h2>
 
             <Form method="POST">
