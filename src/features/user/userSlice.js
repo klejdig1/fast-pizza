@@ -1,16 +1,18 @@
 import {getAddress} from "../../services/apiGeocoding.js";
-import {createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 
-/*
+
 function getPosition() {
     return new Promise(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(resolve, reject);
     });
 }
 
-async function fetchAddress() {
-    // 1) We get the user's geolocation position
+
+
+export const fetchAddress =createAsyncThunk("user/fetchAddress",async ()=>{
+
     const positionObj = await getPosition();
     const position = {
         latitude: positionObj.coords.latitude,
@@ -21,16 +23,20 @@ async function fetchAddress() {
     const addressObj = await getAddress(position);
     const address = `${addressObj?.locality}, ${addressObj?.city} ${addressObj?.postcode}, ${addressObj?.countryName}`;
 
+    console.log(addressObj)
     // 3) Then we return an object with the data that we are interested in
     return { position, address };
-}
 
- */
+})
 
 
 
 const initialState={
     username:'',
+    status:'idle',
+    position:{},
+    address:"",
+    error:'',
 };
 
 
@@ -41,11 +47,29 @@ const userSlice=createSlice({
     reducers:{
         updateName(state,action){
             state.username = action.payload;
-        }
+        },
+    },
+
+    extraReducers:(builder)=>{
+        builder
+            .addCase(fetchAddress.pending,(state,action)=>{
+                state.status="loading";
+            })
+
+            .addCase(fetchAddress.fulfilled,(state,action)=>{
+                state.status='idle';
+                state.position=action.payload.position;
+                state.address=action.payload.address;
+            })
+            .addCase(fetchAddress.rejected,(state, action)=>{
+                state.status='failed';
+                state.error='There was a problem getting your address. Make sure everything is right!';
+            })
+
     }
 
 });
 
 export const {updateName}=userSlice.actions;
 
-export default userSlice.reducer;
+ export default userSlice.reducer;
