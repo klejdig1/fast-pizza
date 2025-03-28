@@ -1,5 +1,4 @@
 
-// https://uibakery.io/regex-library/phone-number
 import {Form, redirect, useActionData, useNavigate} from "react-router-dom";
 import {createOrder} from "../../services/apiRestaurant.js";
 import Button from "../../ui/Button.jsx";
